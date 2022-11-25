@@ -6,9 +6,11 @@ using UnityEngine.InputSystem;
 public class LeverScript : MonoBehaviour
 {
     public bool isOn;
+    public float cooldown = 1f;
     public AudioClip clip;
 
     private bool toggle;
+    private float cooldownDefault;
     private Animator animator;
     private AudioSource audioSrc;
     private PlayerInput input;
@@ -17,6 +19,8 @@ public class LeverScript : MonoBehaviour
 
     private void Awake()
     {
+        cooldownDefault = cooldown;
+
         animator = GetComponent<Animator>();
         audioSrc = GetComponent<AudioSource>();
 
@@ -26,7 +30,9 @@ public class LeverScript : MonoBehaviour
 
     private void Update()
     {
-        if (toggleAction.triggered)
+        if (cooldown > 0) cooldown -= Time.deltaTime;
+
+        if (toggleAction.triggered && cooldown <= 0)
         {
             toggle = true;
         }
@@ -41,14 +47,15 @@ public class LeverScript : MonoBehaviour
     {
         if (toggle && other.tag == "Player")
         {
-            toggleSwitch();
+            ToggleSwitch();
         }
         toggle = false;
     }
 
-    private void toggleSwitch()
+    public void ToggleSwitch()
     {
         isOn = !isOn;
+        cooldown = cooldownDefault;
         animator.SetBool("isOn", isOn);
         audioSrc.PlayOneShot(clip);
     }
