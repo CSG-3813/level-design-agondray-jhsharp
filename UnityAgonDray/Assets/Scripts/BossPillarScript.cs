@@ -9,7 +9,7 @@ public class BossPillarScript : MonoBehaviour
     public LeverScript[] offLevers;
     public AudioClip clip;
 
-    private bool active = false;
+    [HideInInspector] public bool active = false;
     private AudioSource audioSrc;
 
     private void Awake()
